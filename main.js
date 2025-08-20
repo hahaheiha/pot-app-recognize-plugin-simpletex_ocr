@@ -1,49 +1,62 @@
 async function recognize(base64, lang, options) {
     const { config, utils } = options;
-    const { tauriFetch } = utils;
-    let { apikey, engine } = config;
-    base64 = `data:image/png;base64,${base64}`;
+    const { http, readBinaryFile } = utils;
+    const { fetch, Body } = http;
 
-    if (apikey === undefined || apikey.length === 0) {
-        throw "apikey not found";
+    const apiUrl = 'https://server.simpletex.cn/api/simpletex_ocr';
+
+    const apiKey = config.apikey;
+    if (!apiKey) {
+        throw new Error('API Key is required');
     }
-    if (engine === undefined || engine.length === 0) {
-        engine = "1";
-    }
 
-    let res = await tauriFetch('https://api.ocr.space/parse/image', {
-        method: "POST",
-        header: {
-            apikey,
-            "content-type": "application/x-www-form-urlencoded"
-        },
-        body: {
-            type: "Form",
-            payload: {
-                base64Image: base64,
-                OCREngine: engine,
-                language: lang
-            }
-        }
-    })
+    // Use cached image and convert them into binary, referring to the official documentation for implementation.
+    let file = await readBinaryFile('pot_screenshot_cut.png', { dir: BaseDirectory.AppCache });
+    
+    //****************************************************
+    //** Converting with base64 into binary also works. **
+    //****************************************************
+    // const binaryData = atob(base64);
+    // const bytes = new Uint8Array(binaryData.length);
+    // for (let i = 0; i < binaryData.length; i++) {
+    //   bytes[i] = binaryData.charCodeAt(i);
+    // }
 
-    if (res.ok) {
-        const { result } = res.data;
-        const { ErrorMessage, ParsedResults } = result;
-        if (ErrorMessage) {
-            throw ErrorMessage;
-        }
-        if (ParsedResults) {
-            let target = "";
-            for (let i in ParsedResults) {
-                const { ParsedText } = i;
-                target += ParsedText;
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              token: apiKey,
+              'content-type': 'multipart/form-data',
+            },
+            body: Body.form({
+              file: {
+                // Use cached image
+                file: file,
+                // Use base64 to binary
+                // file: bytes,
+                fileName: 'pot_screenshot_cut.png',
+              },
+              // rec_mode: 'document',
+            })
+        });
+
+        if (response.ok) {
+          let result = response.data;
+          if (result.status && result.res) {
+            if (result.res.type === 'formula') {
+              return result.res.info;
+            } else {
+              return result.res.info.markdown;
             }
-            return target;
-        } else {
+          } else {
             throw JSON.stringify(result);
+          }
+        } else {
+          throw `Http Request Error\nHttp Status: ${res.status}\n${JSON.stringify(res.data)}`;
         }
-    } else {
-        throw JSON.stringify(res);
+
+    } catch (error) {
+        throw error;
     }
 }
