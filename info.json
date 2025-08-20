@@ -2,7 +2,7 @@
   "id": "plugin.com.pot-app.simpletex_ocr",
   "plugin_type": "recognize",
   "icon": "icon.png",
-  "display": "SimpleTex Ocr",
+  "display": "SimpleTex OCR",
   "homepage": "https://github.com/hahaheiha/pot-app-recognize-plugin-simpletex_ocr.git",
   "needs": [
     { "key": "apikey", "display": "Api Key", "type": "input" }
