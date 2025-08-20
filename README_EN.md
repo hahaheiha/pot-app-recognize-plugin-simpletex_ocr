@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Pot-app plugin for the SimpleTex Universal Image Recognition [API]([https://server.simpletex.cn/api/simpletex_ocr](https://server.simpletex.cn/api/simpletex_ocr)). It will automatically detect formulas or documents.
+Pot-app plugin for the SimpleTex Universal Image Recognition API. It will automatically detect formulas or documents.
 
 ## You need to apply for a SimpleTex API key
 

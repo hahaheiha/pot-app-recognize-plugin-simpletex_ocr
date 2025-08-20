@@ -3,7 +3,7 @@
 中文 | [English](README_EN.md)
 
 ## 简介
-SimpleTex通用图片识别 [API](https://server.simpletex.cn/api/simpletex_ocr) 的pot-app插件。会自动检测formula或者document。
+SimpleTex通用图片识别 API 的pot-app插件。会自动检测formula或者document。
 
 ## 需要申请 SimpleTex 的 API 密钥
 
